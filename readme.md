@@ -1,4 +1,3 @@
 # Simple implementation of "Tic Tac Toe" game
 
-[[screen.png|width=50px]]
-
+[![logo](screen.png)](https://dosandk.github.io/tic-tac-toe/)
