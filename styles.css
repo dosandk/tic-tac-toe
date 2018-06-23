@@ -1,0 +1,28 @@
+html, body {
+    font-size: 24px;
+}
+table {
+    background: green;
+}
+
+td {
+    width: 80px;
+    height: 80px;
+    text-align: center;
+    border: 1px solid white;
+    cursor: pointer;
+}
+td:hover {
+    background: darkgreen;
+}
+
+.highlight,
+.highlight:hover {
+    background: orange;
+    cursor: default;
+}
+
+button {
+    cursor: pointer;
+    font-size: 24px;
+}
