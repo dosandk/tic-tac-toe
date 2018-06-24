@@ -1,17 +1,7 @@
 const ticTacToe = {
+  n: 3,
   clicksCounter: 0,
-  combinations: [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9],
-
-    [1, 4, 7],
-    [2, 5, 8],
-    [3, 6, 9],
-
-    [1, 5, 9],
-    [3, 5, 7]
-  ],
+  combinations: [],
 
   step (event) {
     const {target} = event;
@@ -30,7 +20,7 @@ const ticTacToe = {
         this.highlightWinner(winner);
         this.$result.textContent += ` ${value} wins!`;
         this.$table.removeEventListener('click', this.step);
-      } else if (this.clicksCounter === 9) {
+      } else if (this.clicksCounter === Math.pow(this.n, 2)) {
         this.$result.textContent += ' Draw!';
       }
     }
@@ -38,6 +28,7 @@ const ticTacToe = {
 
   initialize () {
     this.step = this.step.bind(this);
+    this.combinations = getCombinations(this.n);
 
     this.$table = document.getElementById('table');
     this.$restartBtn = document.getElementById('restart-btn');
@@ -69,3 +60,43 @@ const ticTacToe = {
   }
 };
 
+// Work with matrix
+function getEmptyMatrix (n) {
+  return Array(n).fill(Array(n).fill(null)).map(item => item.slice());
+}
+
+function reverseMatrix (matrix, n) {
+  const emptyMatrix = getEmptyMatrix(n);
+
+  matrix.forEach((subArr, index) => {
+    subArr.forEach((item, itemIndex) => {
+      emptyMatrix[itemIndex][index] = item;
+    });
+  });
+
+  return emptyMatrix;
+}
+
+function getMatrixDiagonals (matrix, n) {
+  const diagonals = Array(2).fill(Array(n).fill(null)).map(item => item.slice());
+
+  matrix.forEach((subArr, index) => {
+    diagonals[0][index] = subArr[index];
+  });
+
+  matrix.slice().reverse().forEach((subArr, index) => {
+    diagonals[1][index] = subArr[index];
+  });
+
+  return diagonals;
+}
+
+function getCombinations (n) {
+  let counter = 0;
+
+  const matrixWithValues = getEmptyMatrix(n).map(arr => arr.map(() => ++counter));
+  const diagonals = getMatrixDiagonals(matrixWithValues, n);
+  const reversedMatrix = reverseMatrix(matrixWithValues, n);
+
+  return [...matrixWithValues, ...reversedMatrix, ...diagonals];
+}
