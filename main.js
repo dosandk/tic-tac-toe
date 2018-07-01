@@ -26,13 +26,24 @@ const ticTacToe = {
     }
   },
 
-  initialize () {
+  initialize (selector, options = {n: 3}) {
+    this.n = options.n;
     this.step = this.step.bind(this);
     this.combinations = getCombinations(this.n);
 
-    this.$table = document.getElementById('table');
-    this.$restartBtn = document.getElementById('restart-btn');
-    this.$result = document.getElementById('result');
+    this.render(selector);
+  },
+
+  render (selector) {
+    this.$el = document.querySelector(selector);
+
+    this.$table = buildField(getMatrix(this.n));
+    this.$result = createResultField();
+    this.$restartBtn = createRestartBtn();
+
+    this.$el.appendChild(this.$result);
+    this.$el.appendChild(this.$table);
+    this.$el.appendChild(this.$restartBtn);
 
     this.store = this.combinations.slice();
     this.$table.addEventListener('click', this.step);
@@ -53,9 +64,9 @@ const ticTacToe = {
     const cellsArr = this.combinations[winnerIndex];
 
     cellsArr.forEach(item => {
-      const $el = document.querySelector(`[data-id="${item}"]`);
+      const $cell = this.$el.querySelector(`[data-id="${item}"]`);
 
-      $el.classList.add('highlight');
+      $cell.classList.add('highlight');
     });
   }
 };
@@ -65,7 +76,7 @@ function getEmptyMatrix (n) {
   return Array(n).fill(Array(n).fill(null)).map(item => item.slice());
 }
 
-function reverseMatrix (matrix, n) {
+function getReversedMatrix (matrix, n) {
   const emptyMatrix = getEmptyMatrix(n);
 
   matrix.forEach((subArr, index) => {
@@ -91,12 +102,55 @@ function getMatrixDiagonals (matrix, n) {
   return diagonals;
 }
 
-function getCombinations (n) {
+function getMatrix (n) {
   let counter = 0;
 
-  const matrixWithValues = getEmptyMatrix(n).map(arr => arr.map(() => ++counter));
+  return getEmptyMatrix(n).map(arr => arr.map(() => ++counter));
+}
+
+function getCombinations (n) {
+  const matrixWithValues = getMatrix(n);
   const diagonals = getMatrixDiagonals(matrixWithValues, n);
-  const reversedMatrix = reverseMatrix(matrixWithValues, n);
+  const reversedMatrix = getReversedMatrix(matrixWithValues, n);
 
   return [...matrixWithValues, ...reversedMatrix, ...diagonals];
+}
+
+function buildField (arr) {
+  const $table = document.createElement('table');
+
+  $table.setAttribute('id', 'table');
+
+  arr.forEach(subArr => {
+    const $tr = document.createElement('tr');
+
+    subArr.forEach(item => $tr.appendChild(createCell(item)));
+    $table.appendChild($tr);
+  });
+
+  function createCell (id) {
+    const $td = document.createElement('td');
+
+    $td.dataset.id = id;
+
+    return $td;
+  }
+
+  return $table;
+}
+
+function createResultField () {
+  const $result = document.createElement('div');
+  $result.textContent = 'Winner:';
+  $result.setAttribute('id', 'result');
+
+  return $result;
+}
+
+function createRestartBtn () {
+  const $resetBtn = document.createElement('button');
+  $resetBtn.textContent = 'Restart Game';
+  $resetBtn.setAttribute('id', 'restart-btn');
+
+  return $resetBtn;
 }
