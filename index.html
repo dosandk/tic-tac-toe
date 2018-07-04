@@ -14,10 +14,10 @@
 
 <div id="box"></div>
 
-<script src="main.js"></script>
+<script type="module">
+  import TicTacToe from './TicTacToe.js';
 
-<script>
-  ticTacToe.initialize('#box');
+  new TicTacToe('#box').render();
 </script>
 </body>
 </html>
