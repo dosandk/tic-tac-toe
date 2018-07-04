@@ -44,6 +44,12 @@ export function findWinner (arr, value) {
     subArr.every(item => item === value));
 }
 
+export function getEmptyCells (store) {
+  const flatStore = store.reduce((acc, val) => acc.concat(val), []);
+
+  return flatStore.filter(item => !isNaN(parseInt(item)));
+}
+
 export function getCombinations (n) {
   const matrixWithValues = getMatrix(n);
   const diagonals = getMatrixDiagonals(matrixWithValues, n);
